@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -I/opt/homebrew/include -I/opt/homebrew/include/SDL2
-LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lm -Iinclude
+LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lm -Isrc
 DEBUGFLAGS = -fsanitize=address
 SRC_FILES := $(filter-out src/main.c, $(wildcard src/*.c))
 TEST_FILES := $(wildcard tests/src/*.c)
@@ -20,3 +20,7 @@ trun:
 		ASAN_OPTIONS=detect_leaks=1:leak_check_at_exit=0 ./tests/build/testing
 trun-normal:
 	./tests/build/testing
+docs:
+	pdflatex docs/docs-latex/main.tex
+	latexmk -pdf -pvc docs/docs-latex/main.tex 
+
