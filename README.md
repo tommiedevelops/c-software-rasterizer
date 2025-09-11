@@ -1,6 +1,6 @@
 **A software rasterizer written in C**  
 
-![Demo of Software Rasterizer](thumbnail.gif)
+![Demo of Software Rasterizer](.thumbnail.gif)
 
 A lightweight software rasterizer written in C that renders 3D models entirely on the CPU.  
 It implements a basic graphics pipeline — transforming vertices, rasterizing triangles, and shading pixels — without relying on OpenGL or DirectX.  

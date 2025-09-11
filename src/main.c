@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "constants.h"
 #include "render.h"
 #include "obj_parser.h"
