@@ -10,38 +10,35 @@
 #include "gfx/render.h"
 
 #define WINDOW_TITLE "Software Rasterizer"
-#define WINDOW_W 1280
-#define WINDOW_H 720
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
 
 int main(void) {
 	// ----- Top Level Structures -----
-	Window*         window       = NULL;
-	GameTime        clock        = {0};	
-	Renderer*       renderer     = NULL;
-	SceneManager*   manager      = NULL;
-	App*            app          = NULL;
+	Window          window            = NULL;
+	GameTime        clock             = {0};	
+	Renderer*       renderer          = NULL;
+	SceneManager*   scene_manager     = NULL;
+	App*            app               = NULL;
 
 	// ----- Init Platform -----
-	window = window_create(WINDOW_TITLE, WINDOW_W, WINDOW_H);
+	window = window_create(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT);
 	clock = time_init(&clock);	
 
 	// ----- Init mid-level services -----
 	renderer = renderer_create(window);
-	manager = scene_manager_create();
+	scene_manager = scene_manager_create();
 
 	// ----- Init App -----
-	app = app_create(renderer, scene);
+	app = app_create(renderer, scene_manager);
 	
 	// Initialize framebuffer and z-buffer
 	uint32_t framebuffer[WIDTH * HEIGHT] = {0};
 	float zbuffer[WIDTH * HEIGHT] = {0};
 
-        /* Prepare Window using SDL */
-        struct SDL_Data window_data = initialise_window();
-
-        /* Render Loop */
         bool running = true;
         SDL_Event event;
+
         while(running) {
 		
 		// Handle Time
@@ -69,24 +66,9 @@ int main(void) {
 			}
                 }	
 
-		// Hide the cursor
 		const Uint8* kb = SDL_GetKeyboardState(NULL);
 
 		// ---- SCRIPTING SECTION -----
-		// Apply transformations to game object
-		float angular_velocity = 0.2f; 
-		float cam_speed = -1.0f;
-		float yaw = time.delta_time * angular_velocity * mouse_dx;
-
-		// input handling 	
-		struct Quaternion cam_delta_lr = quat_normalize(quat_angle_axis(yaw, VEC3F_Y));
-		cam.transform.rotation = quat_normalize(quat_mul(cam.transform.rotation, cam_delta_lr));
-
-		float angle = time.delta_time * angular_velocity * mouse_dx;
-
-		// input handling 	
-		struct Quaternion cam_delta = quat_normalize(quat_angle_axis(angle, VEC3F_Y));
-		cam.transform.rotation = quat_normalize(quat_mul(cam.transform.rotation, cam_delta));
 
 		struct Vec3f move_dir = {0};
 		struct Vec3f move_vec = {0};
@@ -110,23 +92,6 @@ int main(void) {
 			move_dir = quat_get_right(cam.transform.rotation);
 			move_vec = vec3f_scale(move_dir, cam_speed * time.delta_time);
 		}
-
-		cam.transform.position = vec3f_add(cam.transform.position, move_vec);
-
-		float go_angle = angular_velocity * time.delta_time;
-
-		struct Vec3f rot_axis = {.x = 1.0f, .y = 1.0f, .z = 1.0f};
-		struct Vec3f rot_axis1 = {.x = -1.0f, .y = 1.0f, .z = 1.0f};
-		struct Vec3f rot_axis2 = {.x = 1.0f, .y = 1.0f, .z = -1.0f};
-
-		struct Quaternion rot = quat_normalize(quat_angle_axis(go_angle, rot_axis));
-		struct Quaternion rot1 = quat_normalize(quat_angle_axis(2*go_angle, rot_axis1));
-		struct Quaternion rot2 = quat_normalize(quat_angle_axis(3*go_angle, rot_axis2));
-
-		go.transform.rotation = quat_normalize(quat_mul(go.transform.rotation, rot));
-		go1.transform.rotation = quat_normalize(quat_mul(go1.transform.rotation, rot1));
-		go2.transform.rotation = quat_normalize(quat_mul(go2.transform.rotation, rot2));
-
 	
 		// --- END OF SCRIPTING SECTION ---
 		render_scene(framebuffer, zbuffer, scene);

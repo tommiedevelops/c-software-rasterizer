@@ -7,6 +7,9 @@
 #include "quaternion.h"
 
 // --- STRUCT DEFINITIONS --- 
+
+typedef struct SceneManager SceneManager;
+
 struct Transform {
 	struct Vec3f position;  // in world coords
 	struct Quaternion rotation;  

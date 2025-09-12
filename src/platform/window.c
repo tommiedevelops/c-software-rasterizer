@@ -1,7 +1,7 @@
 
 #include "window.h"
 
-struct SDL_Data initialise_window(int width, int height, char* title){
+struct SDL_Data window_create(int width, int height, char* title){
 
 	// Initialise SDL
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -11,9 +11,9 @@ struct SDL_Data initialise_window(int width, int height, char* title){
 
 	// Create window
 	SDL_Window* window = SDL_CreateWindow(
-		"Software Rasterizer",
+		title,
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		WIDTH, HEIGHT, 0
+		width, height, 0
 	);
 
 	SDL_ShowCursor(SDL_DISABLE);
@@ -38,7 +38,7 @@ struct SDL_Data initialise_window(int width, int height, char* title){
 		renderer,
 		SDL_PIXELFORMAT_RGBA8888,
 		SDL_TEXTUREACCESS_STREAMING,
-		WIDTH, HEIGHT
+		width, height 
 	);
 
 	if(texture == NULL){
