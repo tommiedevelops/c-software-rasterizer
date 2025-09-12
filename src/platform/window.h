@@ -8,14 +8,14 @@
 
 #include "constants.h"
 
-struct SDL_Data {
+typedef struct Window {
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Texture* texture;
-};
+} Window;
 
-struct SDL_Data initialise_window();
-void destroy_window(struct SDL_Data data);
-void update_window(struct SDL_Data data, uint32_t* framebuffer);
+Window initialise_window(char* title, int width, int height);
+void destroy_window(Window data);
+void update_window(Window data, uint32_t* framebuffer);
 
 #endif

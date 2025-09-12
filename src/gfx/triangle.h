@@ -8,6 +8,7 @@
 #include "vec3f.h"
 #include "color.h"
 #include "matrix.h"
+#include "bounds.h"
 
 struct Vec3f;
 
@@ -25,6 +26,7 @@ struct Triangle create_triangle(
 	struct Vec3f c
 );
 
+struct Bounds get_bounds_from_tri(struct Triangle tri);
 struct Vec3f calculate_normal(struct Triangle tri);
 struct Triangle apply_transformation(struct Mat4 tr, struct Triangle tri);
 struct Triangle tri_perspective_divide(struct Triangle tri); 

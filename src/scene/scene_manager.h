@@ -1,5 +1,6 @@
 #ifndef SCENE_MANAGER_H 
 #define SCENE_MANAGER_H
+
 #include "vec3f.h"
 #include "obj_parser.h"
 #include "bounds.h"

@@ -2,132 +2,36 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "constants.h"
-#include "render.h"
-#include "obj_parser.h"
-#include "triangle.h"
-#include "window.h"
-#include "scene_manager.h"
-#include "game_time.h"
-#include "quaternion.h"
-#include "texture.h"
-#include "construct_plane.h"
+#include "platform/window.h"
+#include "platform/game_time.h"
 
-// Expects a single string for cmd line input representing the obj that the user wishes to render
+#include "app/app.h"
+#include "scene/scene_manager.h"
+#include "gfx/render.h"
 
-int main(int argc, char* argv[]) {
+#define WINDOW_TITLE "Software Rasterizer"
+#define WINDOW_W 1280
+#define WINDOW_H 720
+
+int main(void) {
+	// ----- Top Level Structures -----
+	Window*         window       = NULL;
+	GameTime        clock        = {0};	
+	Renderer*       renderer     = NULL;
+	SceneManager*   manager      = NULL;
+	App*            app          = NULL;
+
+	// ----- Init Platform -----
+	window = window_create(WINDOW_TITLE, WINDOW_W, WINDOW_H);
+	clock = time_init(&clock);	
+
+	// ----- Init mid-level services -----
+	renderer = renderer_create(window);
+	manager = scene_manager_create();
+
+	// ----- Init App -----
+	app = app_create(renderer, scene);
 	
-	/* Handle CLI */
-	if(argc != 2) {
-		printf("Please provide exactly one filename. ./models/{filename}.obj\n");
-		exit(EXIT_FAILURE);
-	}
-	
-	// Extract filename from CLI
-	char filename[256] = {0};
-	snprintf(filename, sizeof(filename), "./models/%s.obj", argv[1]);
-
-	/* Parse Mesh from .obj file */
-	struct Mesh mesh = parse_obj("./models/bunny.obj");
-	
-	struct Mesh ground_mesh = create_square_plane();
-	struct Vec3f ground_scale = {.x = 5.0f, .y = 1.0f, .z = 5.0f};
-
-	struct Transform ground_tr = {
-		.position = VEC3F_0,
-		.rotation = QUAT_IDENTITY,
-		.scale = ground_scale	
-	};
-
-	struct GameObject ground_go = {
-		.transform = ground_tr,
-		.mesh = ground_mesh
-	};
-	
-	// Prepare Transform and GameObjects
-	struct Vec3f pos0 = {.x = 0.0f, .y = 1.0f, .z = 0.0f};
-	struct Transform transform = {
-		.position = pos0, 
-		.rotation = QUAT_IDENTITY, 
-		.scale = VEC3F_1
-	};
-
-	struct Vec3f pos1 = {.x = 2.0f, .y = 1.0f, .z = 0.0f};
-
-	struct Transform tr1 = {
-		.position = pos1,
-		.rotation = QUAT_IDENTITY,
-		.scale = VEC3F_1
-	};
-
-	struct Vec3f pos2 = {.x = -2.0f, .y = 1.0f, .z = 0.0f};
-
-	struct Transform tr2 = {
-		.position = pos2,
-		.rotation = QUAT_IDENTITY,
-		.scale = VEC3F_1
-	};
-
-	struct GameObject go = {
-		.mesh 	    = mesh     , 
-		.transform  = transform 
-	};
-
-	struct GameObject go1 = {
-		.mesh = mesh ,
-		.transform = tr1
-	};
-
-	struct GameObject go2 = {
-		.mesh = mesh ,
-		.transform = tr2
-	};
-
-	int num_gameObjects = 4;
-	struct GameObject* gameObjects[num_gameObjects];
-	gameObjects[0] = &go;
-	gameObjects[1] = &go1;
-	gameObjects[2] = &go2;
-	gameObjects[3] = &ground_go;
-		
-	// Prepare Camera
-	// To start, the camera is on position (0,0,5) facing the -Z direction
-	struct Vec3f camera_pos = {.x = 0.0f, .y = 0.5f, .z = 3.0f};
-	struct Transform camera_transform = {
-		.position = camera_pos,
-		.rotation = QUAT_IDENTITY,
-		.scale = VEC3F_1
-	};
-
-	struct Camera cam = {0};	
-	cam.transform = camera_transform;
-	
-	cam.fov = PI*60.0f/180.0f; 
-	cam.near = 5.00f;
-	cam.far = 20.0f;
-
-	// Prepare light source
-	struct Vec3f light_source_pos = {
-		.x = 0.0f,
-		.y = 1.0f,
-		.z = 0.0f
-	};
-
-	struct LightSource light_source  = {
-		.direction = light_source_pos
-	};
-
-	struct Scene scene = {
-		.cam = &cam,
-		.gameObjects = gameObjects,
-		.num_gameObjects = num_gameObjects,
-		.light = light_source
-	};
-
-	// Initialize time struct
-	struct Time time;
-	time_init(&time);
-
 	// Initialize framebuffer and z-buffer
 	uint32_t framebuffer[WIDTH * HEIGHT] = {0};
 	float zbuffer[WIDTH * HEIGHT] = {0};

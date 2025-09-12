@@ -1,7 +1,7 @@
 
 #include "window.h"
 
-struct SDL_Data initialise_window(){
+struct SDL_Data initialise_window(int width, int height, char* title){
 
 	// Initialise SDL
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
