@@ -32,10 +32,6 @@ int main(void) {
 	// ----- Init App -----
 	app = app_create(renderer, scene_manager);
 	
-	// Initialize framebuffer and z-buffer
-	uint32_t framebuffer[WIDTH * HEIGHT] = {0};
-	float zbuffer[WIDTH * HEIGHT] = {0};
-
         bool running = true;
         SDL_Event event;
 
@@ -69,6 +65,7 @@ int main(void) {
 		const Uint8* kb = SDL_GetKeyboardState(NULL);
 
 		// ---- SCRIPTING SECTION -----
+
 
 		struct Vec3f move_dir = {0};
 		struct Vec3f move_vec = {0};

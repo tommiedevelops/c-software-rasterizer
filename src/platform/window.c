@@ -1,6 +1,15 @@
 
 #include "window.h"
 
+typedef struct Window {
+        SDL_Window* window;
+        SDL_Renderer* renderer;
+        SDL_Texture* texture;
+	int width;
+	int height;
+	char * title;
+} Window;
+
 struct SDL_Data window_create(int width, int height, char* title){
 
 	// Initialise SDL
