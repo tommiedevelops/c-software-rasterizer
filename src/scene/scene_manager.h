@@ -2,61 +2,75 @@
 #define SCENE_MANAGER_H
 
 #include "vec3f.h"
-#include "obj_parser.h"
 #include "bounds.h"
 #include "quaternion.h"
+
+#include "mesh.h"
+#include "obj_parser.h"
 
 // --- STRUCT DEFINITIONS --- 
 
 typedef struct SceneManager SceneManager;
 
-struct Transform {
+typedef struct Transform {
 	struct Vec3f position;  // in world coords
 	struct Quaternion rotation;  
 	struct Vec3f scale;
-};
+} Transform;
 
-struct Camera { 
+typedef struct Camera { 
 	struct Transform transform;
 	float fov;
 	float near;
 	float far;
-};
+} Camera;
 
-struct Mesh {
-	struct Vec3f* vertices;
-	int num_vertices;
-	int* triangles;
-	int num_triangles;
-};
 
-struct Material {
+typedef struct Material {
 	struct Vec3f color; // fallback color if no texture
 	struct Texture *albedo; // for base color
-};
+} Material;
 
-struct GameObject {
+typedef struct GameObject {
 	struct Transform transform;
-	struct Mesh mesh;
-	struct Material material;
-};
+	struct Mesh* mesh;
+	struct Material* material;
+} GameObject;
 
-struct LightSource {
+typedef struct Light {
 	struct Vec3f direction;
-};
+} Light;
 
-struct Scene {
+typedef struct Scene {
 	struct Camera *cam;
 	struct GameObject **gameObjects;
 	int num_gameObjects;
 	struct LightSource light;
-};
+} Scene;
 
-// --- FUNCTIONS ---
+// Transform 
+Transform create_transform(Vec3f rotation, Vec3f position, Vec3f scale);
+void transform_set_rotation(Transform* tr, Vec3f new_rotation);
+void transform_set_position(Transform* tr, Vec3f new_position);
+void transform_set_scale(Transform* tr, Vec3f new_scale);
 
-// this function basically applies a simple rotation matrix
-struct Vec4f* apply_model_matrix(struct GameObject go);
+// Camera
+Camera camera_create(Transform tr, float fov, float near, float far);
+void camera_set_transform(Camera* cam, Transform tr); 
+void camera_set_fov(Camera* cam, float fov);
+void camera_set_near(Camera* cam, float near);
+void camera_set_far(Camera* cam float, far);
 
+// GameObject
+GameObject game_object_create(Transform transform, Mesh* mesh, Material* mat);
+void game_object_set_transform(GameObject* go, Transform transform);
+void game_object_set_mesh(GameObject* go, Mesh* mesh);
+void game_object_set_material(GameObject* go, Material* mat);
+
+// Material
+Material create_material()
+
+// Matrices 
 struct Mat3 get_screen_space_matrix();
 
 struct Mat4 get_scale_matrix(struct Transform tr); 

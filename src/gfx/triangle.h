@@ -9,21 +9,10 @@
 #include "matrix.h"
 #include "bounds.h"
 
-struct Vec3f;
+typedef struct Triangle Triangle;
 
-struct Triangle {
-	// no order is assumed here
-	struct Vec3f v0;
-	struct Vec3f v1;
-	struct Vec3f v2;
-};
 void print_tri(struct Triangle tri);
-
-struct Triangle create_triangle(
-	struct Vec3f a,
-	struct Vec3f b,
-	struct Vec3f c
-);
+Triangle triangle_create(Vertex* A, Vertex* B, Vertex* C);
 
 struct Bounds get_bounds_from_tri(struct Triangle tri);
 struct Vec3f calculate_normal(struct Triangle tri);

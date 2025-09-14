@@ -7,91 +7,66 @@
 #include "render.h"
 #include "constants.h"
 
-struct Triangle create_triangle(
-	struct Vec3f v0,
-	struct Vec3f v1,
-	struct Vec3f v2 
-){
-	struct Triangle tri = {.v0=v0,.v1=v1,.v2=v2};
+typedef struct Triangle {
+	Vertex* A;
+	Vertex* B;
+	Vertex* C;
+} Triangle;
+
+Triangle triangle_create(Vertex* A, Vertex* B, Vertex* C){
+
+	Triangle tri = {
+		.A = A,
+		.B = B,
+		.C = C
+	};
+
 	return tri;
 }
 
-struct Vec3f calculate_normal(struct Triangle tri){
-	
-	// u = v1 - v0
-	struct Vec3f u = vec3f_add(tri.v0, vec3f_scale(tri.v1, -1));
-	// v = v2 - v0
-	struct Vec3f v = vec3f_add(tri.v0, vec3f_scale(tri.v2, -1));
-	
-	struct Vec3f n = vec3f_normalize(vec3f_cross(u,v));
-	
+Vec3f triangle_calculate_normal(Triangle tri){
+	Vec3f u = vec3f_add(tri.v0, vec3f_scale(tri.v1, -1));
+	Vec3f v = vec3f_add(tri.v0, vec3f_scale(tri.v2, -1));
+	Vec3f n = vec3f_normalize(vec3f_cross(u,v));
 	return n;
 }
 
-struct ClipResult {
-	struct Triangle* triangles;
-	struct num_triangles;
-};
-
-
-void print_tri(struct Triangle tri){
+void triangle_log(struct Triangle tri){
 	printf("printing triangle:\n");
 	print_vec3f(tri.v0);
 	print_vec3f(tri.v1);
 	print_vec3f(tri.v2);
 	printf("end triangle\n");
 }
-void swap(struct Vec3f a, struct Vec3f b){
-	struct Vec3f temp = a;
-	a = b;
-	b = temp;
-}
 
-struct Bounds get_bounds_from_tri(struct Triangle tri){
+Bounds triangle_get_bounds(Triangle tri){
         /* return: [xmin, xmax, ymin, ymax, zmin, zmax] */
-        struct Bounds bounds = BOUNDS_DEFAULT;
-	if (tri.v0.x > bounds.xmax) {bounds.xmax = tri.v0.x;}
-	if (tri.v0.y > bounds.ymax) {bounds.ymax = tri.v0.y;}
-	if (tri.v0.z > bounds.zmax) {bounds.zmax = tri.v0.z;}
+        Bounds bounds = BOUNDS_DEFAULT;
+	if (tri->A.pos.x > bounds.xmax) {bounds.xmax = tri->A.pos.x;}
+	if (tri->A.pos.y > bounds.ymax) {bounds.ymax = tri->A.pos.y;}
+	if (tri->A.pos.z > bounds.zmax) {bounds.zmax = tri->A.pos.z;}
 
-	if (tri.v1.x > bounds.xmax) {bounds.xmax = tri.v1.x;}
-	if (tri.v1.y > bounds.ymax) {bounds.ymax = tri.v1.y;}
-	if (tri.v1.z > bounds.zmax) {bounds.zmax = tri.v1.z;}
+	if (tri->B.pos.x > bounds.xmax) {bounds.xmax = tri->B.pos.x;}
+	if (tri->B.pos.y > bounds.ymax) {bounds.ymax = tri->B.pos.y;}
+	if (tri->B.pos.z > bounds.zmax) {bounds.zmax = tri->B.pos.z;}
 
-	if (tri.v2.x > bounds.xmax) {bounds.xmax = tri.v2.x;}
-	if (tri.v2.y > bounds.ymax) {bounds.ymax = tri.v2.y;}
-	if (tri.v2.z > bounds.zmax) {bounds.zmax = tri.v2.z;}
+	if (tri->C.pos.x > bounds.xmax) {bounds.xmax = tri->C.pos.x;}
+	if (tri->C.pos.y > bounds.ymax) {bounds.ymax = tri->C.pos.y;}
+	if (tri->C.pos.z > bounds.zmax) {bounds.zmax = tri->C.pos.z;}
 
-	if (tri.v0.x < bounds.xmin) {bounds.xmin = tri.v0.x;}
-	if (tri.v0.y < bounds.ymin) {bounds.ymin = tri.v0.y;}
-	if (tri.v0.z < bounds.zmin) {bounds.zmin = tri.v0.z;}
+	if (tri->A.pos.x < bounds.xmin) {bounds.xmin = tri->A.pos.x;}
+	if (tri->A.pos.y < bounds.ymin) {bounds.ymin = tri->A.pos.y;}
+	if (tri->A.pos.z < bounds.zmin) {bounds.zmin = tri->A.pos.z;}
 
-	if (tri.v1.x < bounds.xmin) {bounds.xmin = tri.v1.x;}
-	if (tri.v1.y < bounds.ymin) {bounds.ymin = tri.v1.y;}
-	if (tri.v1.z < bounds.zmin) {bounds.zmin = tri.v1.z;}
+	if (tri->B.pos.x < bounds.xmin) {bounds.xmin = tri->B.pos.x;}
+	if (tri->B.pos.y < bounds.ymin) {bounds.ymin = tri->B.pos.y;}
+	if (tri->B.pos.z < bounds.zmin) {bounds.zmin = tri->B.pos.z;}
 
-	if (tri.v2.x < bounds.xmin) {bounds.xmin = tri.v2.x;}
-	if (tri.v2.y < bounds.ymin) {bounds.ymin = tri.v2.y;}
-	if (tri.v2.z < bounds.zmin) {bounds.zmin = tri.v2.z;}
+	if (tri->C.pos.x < bounds.xmin) {bounds.xmin = tri->C.pos.x;}
+	if (tri->C.pos.y < bounds.ymin) {bounds.ymin = tri->C.pos.y;}
+	if (tri->C.pos.z < bounds.zmin) {bounds.zmin = tri->C.pos.z;}
 
         return bounds;
-}
-
-
-struct Triangle sort_vertices_by_y_asc(struct Triangle tri) {
-	// Mini 3-element bubble sort to order vertices by ascending y
-	struct Triangle res;
-
-	if (tri.v1.y < tri.v0.y) swap(tri.v0,tri.v1);
-	if (tri.v2.y < tri.v1.y) swap(tri.v2,tri.v1);
-	if (tri.v1.y < tri.v0.y) swap(tri.v0,tri.v1);
-
-	res.v0 = tri.v0;
-	res.v1 = tri.v1;
-	res.v2 = tri.v2;
-
-	return res;
-
 }
 
 bool inside_triangle(float alpha, float beta, float gamma){
@@ -116,88 +91,33 @@ bool point_inside(struct Vec4f point){
                (point.z >= 0) && (point.z <= w);	       
 }
 
-struct Triangle apply_perspective_projection(bool* clipped, struct Mat4 m, struct Triangle tri) {
-	struct Triangle res = {0};
+void rasterize_triangle(Vertex A, Vertex B, Vertex C, Material mat, Renderer r) {
 
-	struct Vec4f v4_0 = {.x = tri.v0.x, .y = tri.v0.y, .z = tri.v0.z, .w = 1.0f};
-	struct Vec4f v4_1 = {.x = tri.v1.x, .y = tri.v1.y, .z = tri.v1.z, .w = 1.0f};
-	struct Vec4f v4_2 = {.x = tri.v2.x, .y = tri.v2.y, .z = tri.v2.z, .w = 1.0f};
+	// Get width and height of the viewport
+	int width = r.window->width;
+	int height = r.window->height;
 	
-	v4_0 = mat4_mul_vec4(m,v4_0);
-	v4_1 = mat4_mul_vec4(m,v4_1);
-	v4_2 = mat4_mul_vec4(m,v4_2);
-
-	*clipped = !point_inside(v4_0) || !point_inside(v4_1) || !point_inside(v4_2);
-
-	v4_0 = perspective_divide(v4_0);
-	v4_1 = perspective_divide(v4_1);
-	v4_2 = perspective_divide(v4_2);
-
-	struct Vec3f v3_0 = {.x = v4_0.x, .y = v4_0.y, .z = v4_0.z};
-	struct Vec3f v3_1 = {.x = v4_1.x, .y = v4_1.y, .z = v4_1.z};
-	struct Vec3f v3_2 = {.x = v4_2.x, .y = v4_2.y, .z = v4_2.z};
-
-	res.v0 = v3_0;
-	res.v1 = v3_1;
-	res.v2 = v3_2;
-
-	return res;
-}
-
-
-struct Triangle apply_transformation(struct Mat4 tr, struct Triangle tri) {
-	struct Triangle res;
-
-	struct Vec4f v4_0 = {.x = tri.v0.x, .y = tri.v0.y, .z = tri.v0.z, .w = 1.0f};
-	struct Vec4f v4_1 = {.x = tri.v1.x, .y = tri.v1.y, .z = tri.v1.z, .w = 1.0f};
-	struct Vec4f v4_2 = {.x = tri.v2.x, .y = tri.v2.y, .z = tri.v2.z, .w = 1.0f};
-
-	v4_0 = mat4_mul_vec4(tr, v4_0);
-	v4_1 = mat4_mul_vec4(tr, v4_1);
-	v4_2 = mat4_mul_vec4(tr, v4_2);
-
-	struct Vec3f v3_0 = {.x = v4_0.x, .y = v4_0.y, .z = v4_0.z};
-	struct Vec3f v3_1 = {.x = v4_1.x, .y = v4_1.y, .z = v4_1.z};
-	struct Vec3f v3_2 = {.x = v4_2.x, .y = v4_2.y, .z = v4_2.z};
-
-	res.v0 = v3_0;
-	res.v1 = v3_1;
-	res.v2 = v3_2;
-
-	return res;
-}	
-
-void rasterize_triangle(struct Triangle tri, struct Material* mat, uint32_t* framebuffer, float* zbuffer) {
 	
-	struct Vec3f A = tri.v0;
-	struct Vec3f B = tri.v1;
-	struct Vec3f C = tri.v2;
-
-	struct Bounds bounds = get_bounds_from_tri(tri);
-
+	// Calculate bounds of triangle ON THE VIEWPORT
 	int xmin = (int)bounds.xmin;
 	int xmax = (int)bounds.xmax;
 	int ymin = (int)bounds.ymin;
 	int ymax = (int)bounds.ymax;
 
+	// Loop through each pixel within the bounds on the viewport
 	for(int y = ymin; y <= ymax; y++){
 		for(int x = xmin; x <= xmax; x++) {
-			// check if within bounds
-			if( x >= WIDTH || x <= 0) return;
-			if( y >= HEIGHT || y <= 0) return;
 
-			// calculate barycentric coords
-			float alpha = (A.x*(C.y-A.y)+(y-A.y)*(C.x-A.x)-x*(C.y-A.y))
-					/((B.y-A.y)*(C.x-A.x)-(B.x-A.x)*(C.y-A.y));
-
-			float beta = ((y-A.y) - alpha*(B.y-A.y))/(C.y-A.y);
-			float gamma = 1 - alpha - beta;
-
+			Vec3f bary_coords = calculate_bary_coords(A,B,C);
+			
+			// for pixels inside the triangle
 			if( inside_triangle(alpha, beta, gamma) ) {
+				// interpolate the depth, normals,
 				float depth = interpolate_depth(tri, alpha, beta, gamma);	
-				if(depth >= zbuffer[x + y*WIDTH]){
+				if(depth >= zbuffer[x + y*width]){
+					// place pixel onto the framebuffer and update the zbuffer
 					place_pixel(x,y,color,framebuffer);			
-					zbuffer[x + y*WIDTH] = depth;
+					zbuffer[x + y*width] = depth;
 				}
 			}	
 
@@ -205,4 +125,5 @@ void rasterize_triangle(struct Triangle tri, struct Material* mat, uint32_t* fra
 
 	}
 }
+
 

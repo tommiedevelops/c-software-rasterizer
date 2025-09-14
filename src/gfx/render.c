@@ -5,62 +5,69 @@
 #include <stdbool.h>
 
 #include "vec3f.h"
-#include "render.h"
-#include "color.h"
-#include "matrix.h"
 #include "scene_manager.h"
 
-void place_pixel(int x, int y, uint32_t value, uint32_t* framebuffer) {
-	if( (x > WIDTH) || (x < 0) )
-		printf("render.c/place_pixel: invalid x value. pixel= {%d,%d}\n", x,y); return;
-	if( (y > HEIGHT) || (y < 0) )
-		printf("render.c/place_pixel: invalid y value. pixel= {%d,%d}\n", x,y); return;
+typedef struct Renderer Renderer {
+	Window* window;
+	uint32_t* framebuffer;
+	uint32_t* zbuffer;
+	uint32_t clear_color;
+};
+
+renderer_beginFrame(Renderer* r);
+rednerer_endFrame(Renderer* r);
+
+
+int clip_triangle_clipspace(Vertex* A, Vertex* B, Vertex* C, Triangle* tmp){
+	//TODO
+	return 1;
 }
 
-void render_scene(uint32_t* framebuffer, float* zbuffer, struct Scene scene) {
-	if(scene.gameObjects == NULL){
-		printf("src/render.c/render_scene: no gameObjects to render\n");
-		return;
-	}
-	
+void renderer_draw_scene(Renderer* r, Scene scene) {
+	const Camera* cam = scene->cam;
+	Mat4 PV = mat4_mul_mat4(get_P(cam), get_V(cam));
+
 	for(int i = 0; i < scene.num_gameObjects; i++) {
 		
-		// Primitive Assembly
-		struct GameObject go = *scene.gameObjects[i];
-		struct Material mat = go.material;
-		struct Vec3f* vertices = go.mesh.vertices;
-		int* triangles = go.mesh.triangles;
+		const GameObject* go = scene->gameObjects[i];
+		const Mesh* mesh = &go->mesh;
+		const Material* mat = &go->material;
 
-		// Transform and rasterize each triangle
-		for(int j = 0; j < go.mesh.num_triangles; j++) {
+		Mat4 MVP = mat4_mul_mat4( PV, get_M(go) );	
 
-			struct Triangle tri = {
-				.v0 = vertices[triangles[3*j]],
-				.v1 = vertices[triangles[3*j+1]],
-				.v2 = vertices[triangles[3*j+2]]
-			};	
+		for(int t = 0; t < go.mesh.num_triangles; t++) {
 			
-			// Model to World 
-			tri = apply_transformation(get_model_matrix(go.transform), tri);
-				
-			// World to Camera
-			tri = apply_transformation(get_view_matrix(*scene.cam) ,tri);
+			// Assemble Primitives
+			Vertex A = create_vertex(vertices[triangles[3*t]], NULL, NULL);
+			Vertex B = create_vertex(vertices[triangles[3*t+1]], NULL, NULL);
+			Vertex C = create_vertex(vertices[triangles[3*t+2]], NULL, NULL);
 
-			// Camera to Clip
-			bool clipped = false;	
-			tri = apply_perspective_projection(
-					&clipped,
-					get_projection_matrix(*scene.cam),
-					tri
-			);
+			// Apply MVP
+			A.pos = mat4_mul_vec4(MVP, A.pos);
+			B.pos = mat4_mul_vec4(MVP, B.pos);
+			C.pos = mat4_mul_vec4(MVP, C.pos);
+			
+			// Clipping
+			Triangle tmp[2];
+			int n = clip_triangle_clipspace(&A,&B,&C,tmp);
+			if(!n) continue;		
+			
+			for(int k = 0; k < n; k++){
+				// prep perspective-correct-data
+				prep_perspective_divide_terms(&tmp[k].a);
+				prep_perspective_divide_terms(&tmp[k].b);
+				prep_perspective_divide_terms(&tmp[k].c);
 
-			if(!clipped) return;
+				// divide + viewport
+				ndc_to_screen(&tmp[k].a, r->width, r->height);
+				ndc_to_screen(&tmp[k].b, r->width, r->height);
+				ndc_to_screen(&tmp[k].c, r->width, r->height);
 
-			// Clip to Viewport
-			tri = apply_transformation(get_viewport_matrix(*scene.cam),tri);
+			}
 
-			// Rasterize
-			rasterize_triangle(tri, &mat, framebuffer, zbuffer);
+			rasterize_triangle(r, &tmp[k], mat);
+			
+						
 		}
 	}
 }

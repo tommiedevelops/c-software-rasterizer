@@ -38,12 +38,12 @@ int main(void) {
         while(running) {
 		
 		// Handle Time
-		update_time(&time);
-		/* print_fps(&time); */
+		game_time_update(&time);
 
-		// Clear the buffers	
-		memset(framebuffer, 0x0, sizeof(framebuffer));
-		memset(zbuffer, 0x0, sizeof(zbuffer));
+		app_update(app);		
+
+		renderer_clear_framebuffer(renderer);
+		renderer_clear_zbuffer(renderer);
 
                 // Event Handling
 		int mouse_dx = 0;
