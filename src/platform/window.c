@@ -1,22 +1,10 @@
 
 #include "window.h"
 
-typedef struct Window {
-        SDL_Window* window;
-        SDL_Renderer* renderer;
-        SDL_Texture* texture;
-	int width;
-	int height;
-	char * title;
-} Window;
-
-struct SDL_Data window_create(int width, int height, char* title){
+Window window_create(char* title, int width, int height){
 
 	// Initialise SDL
-	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
-		SDL_Log("SDL_Init Error: %s", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
+	SDL_Init(SDL_INIT_VIDEO);
 
 	// Create window
 	SDL_Window* window = SDL_CreateWindow(
@@ -24,23 +12,12 @@ struct SDL_Data window_create(int width, int height, char* title){
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		width, height, 0
 	);
-
+	
+	// Disable Cursor (if possible)
 	SDL_ShowCursor(SDL_DISABLE);
-	int ret = SDL_ShowCursor(SDL_QUERY);
-	if(ret != SDL_DISABLE) exit(0);	
-
-	if(window == NULL){
-		perror("src/window.c/initialise_window: SDL_CreateWindow returned a NULL ptr");
-		exit(EXIT_FAILURE);
-	}
 
 	// Create renderer
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	if(renderer == NULL){
-		perror("src/window.c/initialise_window: SDL_CreateRenderer returned a NULL ptr");
-		exit(EXIT_FAILURE);
-	}
 
 	// Create texture
 	SDL_Texture* texture = SDL_CreateTexture(
@@ -49,34 +26,20 @@ struct SDL_Data window_create(int width, int height, char* title){
 		SDL_TEXTUREACCESS_STREAMING,
 		width, height 
 	);
-
-	if(texture == NULL){
-		perror("src/window.c/initialise_window: SDL_CreateTexture returned a NULL ptr");
-		exit(EXIT_FAILURE);
-	}
-
-	struct SDL_Data data = {
-		.window = window,
-		.renderer = renderer,
-		.texture = texture
-	};
-
-	return data;
+	
+	// TODO
+	// make Window struct return
+	Window win = {0};
+	return win;	
 }
 
-void destroy_window(struct SDL_Data data){
-	SDL_DestroyTexture(data.texture);
-	SDL_DestroyRenderer(data.renderer);
-	SDL_DestroyWindow(data.window);
-	SDL_Quit();
-}
+void update_window(Window win, uint32_t* framebuffer) {
 
-void update_window(struct SDL_Data data, uint32_t* framebuffer) {
 	// Update texture with framebuffer pixels
-	SDL_UpdateTexture(data.texture, NULL, framebuffer, WIDTH * sizeof(uint32_t));
+	SDL_UpdateTexture(win.texture, NULL, framebuffer, win.width * sizeof(uint32_t));
 
 	// Draw
-	SDL_RenderClear(data.renderer);
-	SDL_RenderCopy(data.renderer, data.texture, NULL, NULL);
-	SDL_RenderPresent(data.renderer);
+	SDL_RenderClear(win.renderer);
+	SDL_RenderCopy(win.renderer, win.texture, NULL, NULL);
+	SDL_RenderPresent(win.renderer);
 }

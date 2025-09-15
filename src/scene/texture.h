@@ -2,13 +2,13 @@
 #define TEXTURE_H
 
 
-struct Texture {
+typedef struct Texture {
 	int width;
 	int height;
 	struct Color* map;
-};
+} Texture;
 
-struct Texture load_texture(char* filename);
+Texture load_texture(char* filename);
 
-void free_texture(struct Texture tex);
+void free_texture(Texture tex);
 #endif

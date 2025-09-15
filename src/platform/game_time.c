@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "game_time.h"
 
-void time_init(struct Time* t){
+void gameTime_init(GameTime* t){
 	if(t == NULL){
-		perror("src/game_time.c/time_init: struct Time* is NULL");
+		perror("src/game_time.c/time_init: GameTime** is NULL");
 		exit(EXIT_FAILURE);
 	}
 	t->delta_time = 0;
@@ -11,9 +11,9 @@ void time_init(struct Time* t){
 	t->last_time = clock();
 }
 
-void update_time(struct Time* t){
+void gameTime_update(GameTime* t){
 	if(t == NULL){
-		perror("src/game_time.c/update_time: struct Time* is NULL");
+		perror("src/game_time.c/update_time: GameTime** is NULL");
 		exit(EXIT_FAILURE);
 	}	
 
@@ -23,18 +23,10 @@ void update_time(struct Time* t){
 	t->total_time += t->delta_time;
 }
 
-void print_time(struct Time* t){
-	if(t == NULL){
-		perror("src/game_time.c/update_time: struct Time* is NULL");
-		exit(EXIT_FAILURE);
-	}	
-	printf("delta_time = {%f}; total_time = {%f}; last_time = {%ld}\n", t->delta_time, t->total_time, t->last_time);
-}
-
-void print_fps(struct Time* t){
+void gameTime_print_fps(GameTime* t){
 
 	if(t == NULL){
-		perror("src/game_time.c/update_time: struct Time* is NULL");
+		perror("src/game_time.c/update_time: GameTime** is NULL");
 		exit(EXIT_FAILURE);
 	}	
 	int fps = 1 / t->delta_time;

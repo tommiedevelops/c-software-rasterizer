@@ -1,22 +1,23 @@
 #ifndef MATRIX_H
 #define MATRIX_H
-#include "vec3f.h"
-#include "vec4f.h"
 
-#define MAT4_ZERO ((struct Mat4){ { \
+#include "vector.h"
+
+#define MAT4_ZERO ((Mat4){ { \
     {0.0f, 0.0f, 0.0f, 0.0f}, \
     {0.0f, 0.0f, 0.0f, 0.0f}, \
     {0.0f, 0.0f, 0.0f, 0.0f}, \
     {0.0f, 0.0f, 0.0f, 0.0f}  \
 } })
 
-struct Mat3 {
+typedef struct Mat3 {
 	float m[3][3];
-};
+} Mat3;
 
-struct Mat4 {
+typedef struct Mat4 {
 	float m[4][4];
-};
+} Mat4;
+
 bool mat4_are_equal(struct Mat4 m0, struct Mat4 m1);
 void print_mat4(struct Mat4 m);
 struct Vec3f mat3_mul_vec3(struct Mat3 m, struct Vec3f v);

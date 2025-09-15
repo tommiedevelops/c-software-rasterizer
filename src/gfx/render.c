@@ -4,26 +4,31 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "vec3f.h"
-#include "scene_manager.h"
+#include "render.h"
 
-typedef struct Renderer Renderer {
-	Window* window;
-	uint32_t* framebuffer;
-	uint32_t* zbuffer;
-	uint32_t clear_color;
-};
+Renderer* renderer_create(Window* window);
 
-renderer_beginFrame(Renderer* r);
-rednerer_endFrame(Renderer* r);
-
-
-int clip_triangle_clipspace(Vertex* A, Vertex* B, Vertex* C, Triangle* tmp){
+void renderer_beginFrame(Renderer* r) {
 	//TODO
-	return 1;
+}
+void renderer_endFrame(Renderer* r) {
+	//TODO 	
+}
+void renderer_setClearColor(Renderer* r, uint32_t clear_color);
+void renderer_clear(Renderer* r);
+
+bool inside_frustum(Vertex* v){
+	if(v->pos.x < -v->pos.w || v->pos.x > v->pos.w) return false;
+	if(v->pos.y < -v->pos.w || v->pos.y > v->pos.w) return false;
+	if(v->pos.z < 0 || v->pos.z > v->pos.w) return false;
+	return true;
 }
 
-void renderer_draw_scene(Renderer* r, Scene scene) {
+int clip_triangle_clipspace(Vertex* A, Vertex* B, Vertex* C, Triangle* tmp){
+	// TODO
+}
+
+void renderer_draw_scene(Renderer* r, Scene* scene) {
 	const Camera* cam = scene->cam;
 	Mat4 PV = mat4_mul_mat4(get_P(cam), get_V(cam));
 
@@ -62,10 +67,10 @@ void renderer_draw_scene(Renderer* r, Scene scene) {
 				ndc_to_screen(&tmp[k].a, r->width, r->height);
 				ndc_to_screen(&tmp[k].b, r->width, r->height);
 				ndc_to_screen(&tmp[k].c, r->width, r->height);
-
+				
+				// rasterize
+				rasterize_triangle(r, &tmp[k], mat);
 			}
-
-			rasterize_triangle(r, &tmp[k], mat);
 			
 						
 		}

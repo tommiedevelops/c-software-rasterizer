@@ -3,7 +3,7 @@
 
 #include "matrix.h"
 
-void print_mat3(struct Mat3 m) {
+void print_mat3(Mat3 m) {
 	
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
@@ -13,7 +13,7 @@ void print_mat3(struct Mat3 m) {
 	}
 }
 
-void print_mat4(struct Mat4 m) {
+void print_mat4(Mat4 m) {
 	
 	for(int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
@@ -24,7 +24,7 @@ void print_mat4(struct Mat4 m) {
 }
 
 
-bool mat4_are_equal(struct Mat4 m0, struct Mat4 m1){
+bool mat4_are_equal(Mat4 m0, Mat4 m1){
 	for(int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
 			if(m0.m[i][j] != m1.m[i][j]) {return false;}
@@ -33,16 +33,16 @@ bool mat4_are_equal(struct Mat4 m0, struct Mat4 m1){
 	return true;
 }
 
-struct Vec3f mat3_mul_vec3(struct Mat3 m, struct Vec3f v) {
-	struct Vec3f result;
+Vec3f mat3_mul_vec3(Mat3 m, Vec3f v) {
+	Vec3f result;
 	result.x = m.m[0][0]*v.x + m.m[0][1]*v.y + m.m[0][2]*v.z;
 	result.y = m.m[1][0]*v.x + m.m[1][1]*v.y + m.m[1][2]*v.z;
 	result.z = m.m[2][0]*v.x + m.m[2][1]*v.y + m.m[2][2]*v.z;
 	return result;
 }
 
-struct Mat4 mat4_mul_mat4(struct Mat4 m0, struct Mat4 m1) {
-    struct Mat4 result;
+Mat4 mat4_mul_mat4(Mat4 m0, Mat4 m1) {
+    Mat4 result;
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
             result.m[row][col] = 0.0f;
@@ -54,8 +54,8 @@ struct Mat4 mat4_mul_mat4(struct Mat4 m0, struct Mat4 m1) {
     return result;
 }
 
-struct Vec4f mat4_mul_vec4(struct Mat4 m, struct Vec4f v) {
-	struct Vec4f result;
+Vec4f mat4_mul_vec4(Mat4 m, Vec4f v) {
+	Vec4f result;
 
 	result.x = m.m[0][0]*v.x + m.m[0][1]*v.y + m.m[0][2]*v.z + m.m[0][3]*v.w;
 	result.y = m.m[1][0]*v.x + m.m[1][1]*v.y + m.m[1][2]*v.z + m.m[1][3]*v.w;
@@ -66,8 +66,8 @@ struct Vec4f mat4_mul_vec4(struct Mat4 m, struct Vec4f v) {
 
 }
 
-struct Mat3 mat3_transpose(struct Mat3 m){
-	struct Mat3 result;
+Mat3 mat3_transpose(Mat3 m){
+	Mat3 result;
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
 			result.m[i][j] = m.m[j][i];
@@ -76,8 +76,8 @@ struct Mat3 mat3_transpose(struct Mat3 m){
 	return result;
 }
 
-struct Mat3 scal_mul_mat3(float s, struct Mat3 m){
-	struct Mat3 result;
+Mat3 scal_mul_mat3(float s, Mat3 m){
+	Mat3 result;
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
 			result.m[i][j] = s*m.m[i][j];

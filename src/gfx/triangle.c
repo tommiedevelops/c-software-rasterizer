@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "triangle.h"
-#include "color.h"
 #include "render.h"
 #include "constants.h"
 
