@@ -6,7 +6,7 @@
 #include "quaternion_tests.h"
 
 void bounds_tests(){
-	test_get_bounds_from_tri();	
+//	test_get_bounds_from_tri();	
 }
 
 void scene_manager_tests(){

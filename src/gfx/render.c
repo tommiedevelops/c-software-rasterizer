@@ -6,17 +6,73 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-Renderer* renderer_create(Window* window) {
-	// TODO
+#define LOG_ERROR(msg) \
+    fprintf(stderr, "[ERROR] %s:%d %s(): %s\n", __FILE__, __LINE__, __func__, msg)
+
+struct Renderer {
+	Window*    window;
+	int        width, height;
+	uint32_t*  framebuffer;
+	uint32_t*  zbuffer;
+	uint32_t   clear_color;
+};
+
+// Life Cycle
+Renderer* renderer_create(Window* win) {
+
+	if(win == NULL) {
+		LOG_ERROR("window is NULL");
+		return NULL;
+	}
+
+	Renderer* r = calloc(1, sizeof(*r));
+	
+	if(!r) {
+		LOG_ERROR("allocation failed");
+		return NULL;
+	}
+
+	r->window = win;
+	r->width  = win->width;
+	r->height = win->height;
+
+	int num_pixels = r->width * r->height;
+
+	r->framebuffer = malloc(sizeof(uint32_t) * num_pixels);
+	r->zbuffer     = malloc(sizeof(uint32_t) * num_pixels);
+
+	if(!r->framebuffer || !r->zbuffer) {
+		LOG_ERROR("framebuffer or zbuffer allocation failed");
+		free(r->framebuffer);
+		free(r->zbuffer);
+		free(r);
+		return NULL;
+	}
+
+	r->clear_color = 0x000000FF; // RGBA black
+	
+	return r;
 }
 
-void renderer_beginFrame(Renderer* r) {
+void renderer_destroy(Renderer* r) {
+
+	if(NULL == r) {
+	       	LOG_ERROR("NULL ptr");
+		return;
+	}
+
+	free(r->framebuffer);
+	free(r->zbuffer);
+	free(r);
+}
+
+void renderer_begin_frame(Renderer* r) {
 	//TODO
 }
-void renderer_endFrame(Renderer* r) {
+void renderer_end_frame(Renderer* r) {
 	//TODO 	
 }
-void renderer_setClearColor(Renderer* r, uint32_t clear_color);
+void renderer_set_clear_color(Renderer* r, uint32_t clear_color);
 void renderer_clear(Renderer* r);
 
 bool inside_frustum(Vertex* v){

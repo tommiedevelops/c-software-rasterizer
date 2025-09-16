@@ -8,21 +8,20 @@
 #include "vector.h"
 #include "vertex.h"
 
-typedef struct Renderer {
-	Window* window;
-	int width, height;
-	uint32_t* framebuffer;
-	uint32_t* zbuffer;
-	uint32_t clear_color;
-} Renderer;
+typedef struct Renderer Renderer;
 
+// Life Cycle
 Renderer* renderer_create(Window* window);
+void renderer_destroy(Renderer* r);
 
-void renderer_setClearColor(Renderer* r, uint32_t clear_color);
-void renderer_clear(Renderer* r);
+// State
+void renderer_set_clear_color(Renderer* r, uint32_t clear_color);
+void renderer_clear_framebuffer(Renderer* r);
+void renderer_clear_zbuffer(Renderer* r);
 
+// Rendering
 void renderer_draw_scene(Renderer* r, Scene* scene);
-void renderer_beginFrame(Renderer* r); // clear framebuffer 
-void renderer_endFrame(Renderer* r); // write to SDL window
+void renderer_begin_frame(Renderer* r); // clear framebuffer 
+void renderer_end_frame(Renderer* r); // write to SDL window
 
 #endif

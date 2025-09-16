@@ -50,11 +50,12 @@ int main(void) {
 		app_update(app, gameTime_deltaTime(&time));
 		input_endFrame(input_handler);
 
-		renderer_beginFrame(renderer);
+		renderer_begin_frame(renderer);
 		app_render(app);
-		renderer_endFrame(renderer);
+		renderer_end_frame(renderer);
         }
 
 	// ----- Clean Up -----
+	renderer_destroy(renderer);
         return 0;
 }

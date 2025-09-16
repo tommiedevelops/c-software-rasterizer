@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
-#include "vec3f.h"
+#include "vector.h"
 void test_vec3f_cross(){
 	printf("test_vec3f_cross\n");	
 	struct Vec3f u, v, result, expected;

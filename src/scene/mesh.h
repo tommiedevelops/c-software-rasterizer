@@ -1,8 +1,9 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include "vector.h"
 typedef struct Mesh {
-	struct Vec3f* vertices;
+	Vec3f* vertices;
 	int num_vertices;
 	int* triangles;
 	int num_triangles;
