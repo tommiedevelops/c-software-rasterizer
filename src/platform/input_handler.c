@@ -1,3 +1,4 @@
+#include "input_handler.h"
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 bool func(SDL_Event event){
@@ -31,5 +32,20 @@ bool other_func(){
 	if(kb[SDL_SCANCODE_D]) {
 	}
 
+}
+
+InputHandler* inputHandler_create() {
+	// TODO
+	return NULL;
+}
+void input_beginFrame(InputHandler* input) {
+	// TODO
+}
+bool input_processEvent(SDL_Event* event) {
+	// TODO
+	return false;
+}
+void input_endFrame(InputHandler* input) {
+	// TODO
 }
 

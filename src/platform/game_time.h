@@ -9,7 +9,7 @@ typedef struct GameTime {
 	clock_t last_time; // unit: cpu clock cycles
 } GameTime;
 
-float gameTime_deltaTime();
+double gameTime_deltaTime();
 void gameTime_init(GameTime* t);
 void gameTime_update(GameTime* t);
 void gameTime_print_fps(GameTime* t);

@@ -1,11 +1,18 @@
+#include "scene_manager.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "scene_manager.h"
-#include "matrix.h"
 
-SceneManager* scene_manager_create();
+#include "matrix.h"
+#include "bounds.h"
+
+
+SceneManager* scene_manager_create() {
+	// TODO
+	return NULL;
+} 
 
 Mat4 get_rotation_matrix(Transform tr) {
 	return quat_to_mat4(quat_normalize(tr.rotation));
@@ -34,7 +41,7 @@ Mat4 get_translation_matrix(Transform tr) {
 }
 
 
-Mat4 get_M(Transform tr){
+Mat4 get_model_matrix(Transform tr){
 	Mat4 result;
 	result = get_scale_matrix(tr);
 	result = mat4_mul_mat4(get_rotation_matrix(tr), result);
@@ -74,15 +81,15 @@ Mat4 mat4_affine_orthonormal_inverse(Mat4 mat) {
 	return result;
 }
 
-Mat4 get_V(Camera cam){
+Mat4 get_view_matrix(Camera cam){
 	// i guess you'd just apply the inverse model matrix of the camera
 	return mat4_affine_orthonormal_inverse(get_model_matrix(cam.transform));
 }
 
-Mat4 get_P(Camera cam) {
+Mat4 get_projection_matrix(Camera cam) {
 
 	float fov = cam.fov;
-	float aspect = (float) HEIGHT/WIDTH;
+	float aspect = (float) cam.height / cam.width;
 	float zn = cam.near;
 	float zf = cam.far;
 
@@ -112,12 +119,14 @@ Mat4 get_viewport_matrix(Camera cam){
 
 	float near = cam.near;
 	float far = cam.far;
+	float width = cam.width;
+	float height = cam.height;
 
 	Mat4 P = {0};
-	P.m[0][0] = WIDTH/2;
-	P.m[1][1] = HEIGHT/2;
-	P.m[0][3] = WIDTH/2;
-	P.m[1][3] = HEIGHT/2;
+	P.m[0][0] = width/2;
+	P.m[1][1] = height/2;
+	P.m[0][3] = width/2;
+	P.m[1][3] = height/2;
 	P.m[2][2] = (far - near);
 	P.m[2][3] = near;
 	P.m[3][3] = 1.0f;

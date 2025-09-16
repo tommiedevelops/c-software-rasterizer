@@ -1,8 +1,9 @@
+#include "bounds.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bounds.h"
 
 bool bounds_are_equal(struct Bounds a, struct Bounds b){
 	if(a.xmin != b.xmin) return false;

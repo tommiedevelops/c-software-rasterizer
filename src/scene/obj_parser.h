@@ -1,6 +1,7 @@
 #ifndef OBJ_PARSER_H
 #define OBJ_PARSER_H
 
+#pragma once
 #include "vector.h"
 #include "triangle.h"
 #include "scene_manager.h"

@@ -1,21 +1,24 @@
-#include <stdio.h>
 #include "vertex.h"
+
+#include <stdio.h>
+
 #include "triangle.h"
+#include "vector.h"
 
 
-void vertex_calculate_bary_coords(float x, float y, Triangle* tri) {
+Vec3f vertex_calculate_bary_coords(float x, float y, Vertex* A, Vertex* B, Vertex* C) {
 
 	Vec3f result;
 
-	Vec4f A = tri->A.pos;
-	Vec4f B = tri->B.pos;
-	Vec4f C = tri->C.pos;
+	Vec4f a = A->pos;
+	Vec4f b = B->pos;
+	Vec4f c = C->pos;
 
-	result.x = (A.x*(C.y-A.y)+(y-A.y)*(C.x-A.x)-x*(C.y-A.y))
-			/((B.y-A.y)*(C.x-A.x)-(B.x-A.x)*(C.y-A.y));
+	result.x = (a.x*(c.y-a.y)+(y-a.y)*(c.x-a.x)-x*(c.y-a.y))
+			/((b.y-a.y)*(c.x-a.x)-(b.x-a.x)*(c.y-a.y));
 
-	result.y = ((y-A.y) - alpha*(B.y-A.y))/(C.y-A.y);
-	result.z = 1 - alpha - beta;
+	result.y = ((y-a.y) - result.x*(b.y-a.y))/(c.y-a.y);
+	result.z = 1 - result.x - result.y;
 
 	return result;
 }

@@ -32,3 +32,7 @@ void gameTime_print_fps(GameTime* t){
 	int fps = 1 / t->delta_time;
 	printf("fps = {%d}\n", fps);
 }
+
+double gameTime_deltaTime(GameTime* t){
+	return t->delta_time;
+}

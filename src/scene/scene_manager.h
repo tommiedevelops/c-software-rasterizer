@@ -1,16 +1,13 @@
 #ifndef SCENE_MANAGER_H 
 #define SCENE_MANAGER_H
 
-#include "vector.h"
-#include "bounds.h"
 #include "quaternion.h"
-
+#include "vector.h"
 #include "mesh.h"
-#include "obj_parser.h"
+#include "matrix.h"
 #include "texture.h"
 
 // --- STRUCT DEFINITIONS --- 
-//
 typedef struct Transform {
 	Vec3f position;  // in world coords
 	Quaternion rotation;  
@@ -19,6 +16,7 @@ typedef struct Transform {
 
 typedef struct Camera { 
 	Transform transform;
+	int width, height;
 	float fov;
 	float near;
 	float far;
