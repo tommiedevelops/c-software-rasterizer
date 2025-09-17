@@ -12,47 +12,7 @@
 #include "transform.h"
 #include "game_object.h"
 
-enum SceneNodeType {
-	CAMERA,
-	LIGHT,
-	GAMEOBJECT
-};
-
-typedef struct SceneNode SceneNode;
-struct SceneNode {
-
-	enum SceneNodeType type;
-
-	// SceneGraph Relations
-	SceneNode* parent;
-	SceneNode* children;
-	int num_children;
-
-	// Reference to next SceneNode
-	SceneNode* next_root;
-	int root_id;
-
-	// Components
-	Transform tr;
-	Mesh* mesh;
-	Material* material;
-
-};
-
-typedef struct SceneGraph {
-	// Camera & Properties
-       	SceneNode* cam; 
-	float fov, near, far;
-	bool is_orthographic;
-
-	SceneNode* root; // Start of SLL
-} SceneGraph;
-
-typedef struct SceneManager  {
-	// Simple array. Number of scenes should be known at compile time.
-	SceneGraph* scenes;
-	int num_scenes;
-} SceneManager;
+typedef struct SceneManager SceneManager;
 
 SceneManager* scene_manager_create();
 int scene_manager_create_new_scene(SceneManager* manager);

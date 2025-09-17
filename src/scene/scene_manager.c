@@ -12,6 +12,50 @@
 #define LOG_ERROR(msg) \
     fprintf(stderr, "[ERROR] %s:%d %s(): %s\n", __FILE__, __LINE__, __func__, msg)
 
+enum NodeType {
+	CAMERA,
+	LIGHT,
+	GAMEOBJECT
+};
+
+typedef struct Node Node;
+typedef struct Root Root;
+
+struct Root {
+	Node* root;	
+	Root* next;
+};
+
+struct Node {
+	enum NodeType type;
+
+	// SceneGraph Relations
+	Node* parent;
+	Node* children;
+	int num_children;
+
+	// Components
+	Transform tr;
+	Mesh* mesh;
+	Material* material;
+};
+
+typedef struct SceneGraph {
+	// Camera & Properties
+       	Node* cam; 
+	float fov, near, far;
+	bool is_orthographic;
+
+	Node* root; // Start of SLL & root of tree
+	int scene_index;
+} SceneGraph;
+
+typedef struct SceneManager  {
+	// Simple array. Number of scenes should be known at compile time.
+	SceneGraph* scenes;
+	int num_scenes;
+} SceneManager;
+
 // Life Cycle
 SceneManager* scene_manager_create() {
 	// TODO
