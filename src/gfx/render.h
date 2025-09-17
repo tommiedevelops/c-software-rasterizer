@@ -20,7 +20,7 @@ void renderer_clear_framebuffer(Renderer* r);
 void renderer_clear_zbuffer(Renderer* r);
 
 // Rendering
-void renderer_draw_scene(Renderer* r, Scene* scene);
+void renderer_draw_scene(Renderer* r, SceneGraph* scene);
 void renderer_begin_frame(Renderer* r); // clear framebuffer 
 void renderer_end_frame(Renderer* r); // write to SDL window
 

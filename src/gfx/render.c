@@ -91,14 +91,14 @@ void rasterize_triangle(Triangle* tri, Renderer* r, Material* mat) {
 }
 
 
-void renderer_draw_scene(Renderer* r, Scene* scene) {
-	Camera* cam = scene->cam;
+void renderer_draw_scene(Renderer* r, SceneGraph* scene) {
+	Camera* cam; //fix
 	Mat4 PV = mat4_mul_mat4(get_projection_matrix(*cam), get_view_matrix(*cam));
-
-	for(int i = 0; i < scene->num_gameObjects; i++) {
+	int num_gameObjects = 0; //fix
+	for(int i = 0; i < num_gameObjects; i++) {
 		
-		GameObject* go = scene->gameObjects[i];
-
+		//GameObject* go = scene->gameObjects[i];
+		GameObject* go;
 		Mesh* mesh = go->mesh;
 		Material* mat = go->material;
 

@@ -9,10 +9,21 @@
 #include "bounds.h"
 
 
+#define LOG_ERROR(msg) \
+    fprintf(stderr, "[ERROR] %s:%d %s(): %s\n", __FILE__, __LINE__, __func__, msg)
+
+// Life Cycle
 SceneManager* scene_manager_create() {
 	// TODO
 	return NULL;
-} 
+}
+
+void scene_manager_destroy(SceneManager* scene){
+	if(!scene){
+		LOG_ERROR("provided scene is NULL");
+		return;
+	}
+}
 
 Mat4 get_rotation_matrix(Transform tr) {
 	return quat_to_mat4(quat_normalize(tr.rotation));
