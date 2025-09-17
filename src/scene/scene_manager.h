@@ -12,8 +12,22 @@
 #include "transform.h"
 #include "game_object.h"
 
-typedef struct SceneManager SceneManager;
+#define LOG_ERROR(msg) \
+    fprintf(stderr, "[ERROR] %s:%d %s(): %s\n", __FILE__, __LINE__, __func__, msg)
 
+enum SceneNodeType {
+	Camera,
+	Light,
+	GameObject
+};
+
+typedef struct SceneNode SceneNode;
+typedef struct SceneManager SceneManager;
+typedef struct Scene Scene;
+
+void transform_set(Transform* tr, Vec3f pos, Quaternion rot, Vec3f scale);
+Transform transform_default();
+SceneNode* scene_node_create(SceneNode* parent, Transform tr);
 SceneManager* scene_manager_create();
 int scene_manager_create_new_scene(SceneManager* manager);
 void scene_manager_delete_scene(SceneManager* manager, int scene_index);

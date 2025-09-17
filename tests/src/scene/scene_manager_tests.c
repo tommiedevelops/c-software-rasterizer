@@ -6,6 +6,28 @@
 
 #define PI (3.14159265358979323846)
 
+void test_scene_node_create(){d
+	printf("test_scene_node_create\n");
+	SceneNode* parent = malloc(sizeof(SceneNode));
+	parent.parent = NULL;
+	parent.children = NULL;
+	parent.num_children = 0;
+
+	set_transform(
+		       &parent.transform, 
+		       vec3f_create(0.0f, 1.0f, 0.0f),
+		       QUAT_IDENTITY,
+		       VEC3F_0
+	);
+
+	parent.mesh = NULL;
+	parent.material = NULL;
+	
+	SceneNode* scene_node_create(parent, SceneNodeType.GameObject);
+	//TODO
+
+	printf("success\n");
+}
 
 void test_get_scale_matrix() {
 	printf("test_get_scale_matrix\n");

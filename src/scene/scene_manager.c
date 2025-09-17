@@ -8,53 +8,110 @@
 #include "matrix.h"
 #include "bounds.h"
 
-
 #define LOG_ERROR(msg) \
     fprintf(stderr, "[ERROR] %s:%d %s(): %s\n", __FILE__, __LINE__, __func__, msg)
 
-enum NodeType {
-	CAMERA,
-	LIGHT,
-	GAMEOBJECT
+#define SCENE_MANAGER_NOT_SET (-1)
+
+typedef struct SceneRoot;
+
+struct SceneRoot {
+	SceneNode* root;	
+	SceneRoot* next;
 };
 
-typedef struct Node Node;
-typedef struct Root Root;
-
-struct Root {
-	Node* root;	
-	Root* next;
-};
-
-struct Node {
-	enum NodeType type;
+struct SceneNode {
+	enum SceneNodeType type;
 
 	// SceneGraph Relations
-	Node* parent;
-	Node* children;
+	SceneNode* parent;
+	SceneNode* children;
 	int num_children;
 
 	// Components
-	Transform tr;
+	Transform transform;
 	Mesh* mesh;
 	Material* material;
 };
 
-typedef struct SceneGraph {
+typedef struct Scene {
 	// Camera & Properties
-       	Node* cam; 
+       	SceneNode* cam; 
 	float fov, near, far;
-	bool is_orthographic;
+	bool orthographic;
 
-	Node* root; // Start of SLL & root of tree
+	SceneRoot* root; // Start of SLL & root of tree
 	int scene_index;
-} SceneGraph;
+} Scene;
 
 typedef struct SceneManager  {
 	// Simple array. Number of scenes should be known at compile time.
-	SceneGraph* scenes;
+	Scene* scenes;
 	int num_scenes;
 } SceneManager;
+
+void transform_set(Transform* tr, Vec3f pos, Quaternion rot, Vec3f scale){
+	if(tr == NULL) {
+		LOG_ERROR("transform is NULL");
+		return;
+	}
+
+	tr.posisition = pos;
+	tr.rotation = rot;
+	tr.scale = scale;
+}
+
+Scene* scene_manager_create_scene() {
+	Scene* scene = malloc(sizeof(Scene));	
+	if(!scene) LOG_ERROR("scene->malloc failed");
+
+	scene->cam = NULL;
+	scene->fov = SCENE_MANAGER_NOT_SET;
+	scene->far = SCENE_MANAGER_NOT_SET;
+	scene->near = SCENE_MANAGER_NOT_SET;
+
+	scene->orthographic = false;
+	scene->scene_index = SCENE_MANAGER_NOT_SET;
+
+	return scene;
+}
+
+SceneNode* scene_node_create(SceneNode* parent, SceneNodeType type) {
+	// TODO	
+	return NULL;
+}
+
+
+Transform transform_default(){
+	Transform tr;
+	tr.scale = VEC3F_1;
+	tr.rotation = QUAT_IDENTITY;
+	tr.position = VEC3F_0;
+	return tr;
+}
+
+SceneNode* scene_manager_create_camera(float fov, float near, float far) {
+	SceneNode* cam_node = scene_node_create(NULL, transform_default());
+		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Life Cycle
 SceneManager* scene_manager_create() {
