@@ -82,3 +82,12 @@ it was around 5fps.
 * I hacked away at the issue from yesterday. It's fixed but I don't know why. I'll just leave it for now. 
 * Gonna try implement a simple character controller for now
 * just testing my git commits from my mac as well
+
+18/09/25
+* I've decided to refactor this program into a renderer, window and scene_manager. 
+* The scene_manager is a program that manages a SceneGraph data structure to represent the 3D scene 
+* The renderer is the render pipeline
+* The window interfaces with SDL to manage the window but also events and input handling
+* In terms of scope, I wish to implement and test a basic SceneGraph, implement Materials, Textures and Shaders to the Renderer as well as fix issues associated with clipping and the projection matrix. I also want to add some nice lighting and a skybox but that might be in the 'nice to have'.
+* And have basic input handling working. That's about it!
+* I'm getting a bit burned out working on this though so I might work on some other stuff and come back to this. I need to document it well so I know where I left off. Most of my recent work is in the 'refactor' branch. 

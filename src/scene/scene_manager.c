@@ -13,7 +13,7 @@
 
 #define SCENE_MANAGER_NOT_SET (-1)
 
-typedef struct SceneRoot;
+typedef struct SceneRoot SceneRoot;
 
 struct SceneRoot {
 	SceneNode* root;	
@@ -21,7 +21,6 @@ struct SceneRoot {
 };
 
 struct SceneNode {
-	enum SceneNodeType type;
 
 	// SceneGraph Relations
 	SceneNode* parent;
@@ -50,15 +49,23 @@ typedef struct SceneManager  {
 	int num_scenes;
 } SceneManager;
 
+Transform transform_default(){
+	Transform tr;
+	tr.scale = VEC3F_1;
+	tr.rotation = QUAT_IDENTITY;
+	tr.position = VEC3F_0;
+	return tr;
+}
+
 void transform_set(Transform* tr, Vec3f pos, Quaternion rot, Vec3f scale){
 	if(tr == NULL) {
 		LOG_ERROR("transform is NULL");
 		return;
 	}
 
-	tr.posisition = pos;
-	tr.rotation = rot;
-	tr.scale = scale;
+	tr->position= pos;
+	tr->rotation = rot;
+	tr->scale = scale;
 }
 
 Scene* scene_manager_create_scene() {
@@ -76,30 +83,20 @@ Scene* scene_manager_create_scene() {
 	return scene;
 }
 
-SceneNode* scene_node_create(SceneNode* parent, SceneNodeType type) {
-	// TODO	
-	return NULL;
+SceneNode* scene_node_create(SceneNode* parent) {
+
+	SceneNode* node = malloc(sizeof(SceneNode));
+	if(NULL == node) LOG_ERROR("node malloc failed");
+	
+	node->parent = parent;
+	node->children = NULL;
+	// Transform is specified w.r.t parent Transform (Child Space)
+	node->transform = transform_default();
+	node->mesh = NULL;
+	node->material = NULL;
+
+	return node;
 }
-
-
-Transform transform_default(){
-	Transform tr;
-	tr.scale = VEC3F_1;
-	tr.rotation = QUAT_IDENTITY;
-	tr.position = VEC3F_0;
-	return tr;
-}
-
-SceneNode* scene_manager_create_camera(float fov, float near, float far) {
-	SceneNode* cam_node = scene_node_create(NULL, transform_default());
-		
-}
-
-
-
-
-
-
 
 
 
