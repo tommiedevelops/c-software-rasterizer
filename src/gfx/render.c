@@ -12,10 +12,32 @@
 struct Renderer {
 	Window*    window;
 	int        width, height;
+
 	uint32_t*  framebuffer;
 	uint32_t*  zbuffer;
+
 	uint32_t   clear_color;
 };
+
+/*
+ * int main(){
+ * 	Scene* scene = scene_manager_create_default_scene();
+ * 	Window* window = window_create();
+ * 	Renderer* render = renderer_create();
+ *
+ * 	App* app = app_create(scene);
+ *
+ * 	app_initialise_scene();
+ *	
+ *	bool running = true;
+ *	while(running) {
+ *		app_update_scene(scene);	
+ *		graphics_pipeline_render_scene();	
+ *	}	
+ *
+ *
+ * }
+ */
 
 // Life Cycle
 Renderer* renderer_create(Window* win) {
